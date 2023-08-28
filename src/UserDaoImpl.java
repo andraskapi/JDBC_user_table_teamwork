@@ -5,21 +5,39 @@ import java.sql.Statement;
 import java.util.Optional;
 import java.util.Set;
 
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao {
+
+    @Override
+    public void printUser(){
+
+        try(Statement stm = ConnectionFactory.getConnection().createStatement();
+        ResultSet rs = stm.executeQuery("SELECT * FROM user")){
+            while (rs.next()){
+                System.out.println("id: " + rs.getInt("id") + " name: "+ rs.getString("name") +
+                        " age: " + rs.getInt("age"));
+            }
+
+        }catch (SQLException e){
+           e.printStackTrace();
+        }
+
+
+    }
+
     @Override
     public Optional<User> getUser(int id) {
-        try(Statement stm = ConnectionFactory.getConnection().createStatement();
-            ResultSet rs = stm.executeQuery("SELECT * FROM user WHERE id = " + id)
-        ){
-            if (rs.next()){
-                return Optional.of( new User(
+        try (Statement stm = ConnectionFactory.getConnection().createStatement();
+             ResultSet rs = stm.executeQuery("SELECT * FROM user WHERE id = " + id)
+        ) {
+            if (rs.next()) {
+                return Optional.of(new User(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("password"),
                         rs.getInt("age")));
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -30,10 +48,11 @@ public class UserDaoImpl implements UserDao{
     @Override
     public void updateUserPassword(int id, String newPass) {
 
-        try(PreparedStatement ps = ConnectionFactory.getConnection().prepareStatement("UPDATE user SET password = ? WHERE id = ? "))
-        {
-            ps.setString(4,newPass);
-            ps.setInt(1,id);
+        try (PreparedStatement ps = ConnectionFactory.getConnection().prepareStatement("UPDATE user SET password = ? WHERE id = ? ")) {
+            ps.setString(1, newPass);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+
 
 
         } catch (SQLException e) {
@@ -52,7 +71,6 @@ public class UserDaoImpl implements UserDao{
     public User getUserByUserNameAndPassword(String user, String password) {
 
 
-
         return null;
     }
 
@@ -67,11 +85,11 @@ public class UserDaoImpl implements UserDao{
     }
 
 
-
-
-
     @Override
     public boolean deleteUser() {
         return false;
     }
+
+
+
 }

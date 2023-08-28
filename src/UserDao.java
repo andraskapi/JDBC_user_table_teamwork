@@ -3,6 +3,8 @@ import java.util.Set;
 
 public interface UserDao {
 
+        public void printUser();
+
         Optional<User> getUser(int id);
 
         Set<User> getAllUsers();
