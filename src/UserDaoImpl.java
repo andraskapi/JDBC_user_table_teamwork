@@ -3,9 +3,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.Set;
 
 public class UserDaoImpl implements UserDao {
+
+    Scanner sc = new Scanner(System.in);
+
+    @Override
+    public User getUserByName(String name) {
+        try(Statement stm = ConnectionFactory.getConnection().createStatement();
+        ResultSet rs = stm.executeQuery("SELECT * FROM user WHERE name LIKE " + name)){
+
+            if (rs.next()) {
+
+                return new User(rs.getInt("id"),rs.getString("name"), rs.getInt("age"), rs.getString("password"));
+            }
+
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     @Override
     public void printUser(){
@@ -26,6 +47,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> getUser(int id) {
+
         try (Statement stm = ConnectionFactory.getConnection().createStatement();
              ResultSet rs = stm.executeQuery("SELECT * FROM user WHERE id = " + id)
         ) {

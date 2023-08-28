@@ -3,7 +3,9 @@ import java.util.Set;
 
 public interface UserDao {
 
-        public void printUser();
+        User getUserByName (String name);
+
+        void printUser();
 
         Optional<User> getUser(int id);
 
