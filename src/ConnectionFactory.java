@@ -23,6 +23,9 @@ public class ConnectionFactory {
         System.out.println(userdao.getUser(2));
         userdao.updateUserPassword(1, "kefe");
         userdao.printUser();
+        System.out.println(userdao.getUserByName("Andr"));
+        userdao.removeUser(6);
+        userdao.printUser();
 
 //            Connection connection = getConnection();
 //

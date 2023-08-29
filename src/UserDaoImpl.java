@@ -2,23 +2,43 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class UserDaoImpl implements UserDao {
 
     Scanner sc = new Scanner(System.in);
 
     @Override
-    public User getUserByName(String name) {
-        try(Statement stm = ConnectionFactory.getConnection().createStatement();
-        ResultSet rs = stm.executeQuery("SELECT * FROM user WHERE name LIKE " + name)){
+    public void removeUser(int id) {
+        try(PreparedStatement ps = ConnectionFactory.getConnection().prepareStatement("DELETE FROM user WHERE id = ? "))
+        {
+            ps.setInt(1,id);
+            ps.executeUpdate();
 
-            if (rs.next()) {
 
-                return new User(rs.getInt("id"),rs.getString("name"), rs.getInt("age"), rs.getString("password"));
-            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public List<User> getUserByName(String name) {
+        List<User> userList = new ArrayList<>();
+
+        try(PreparedStatement ps = ConnectionFactory.getConnection().prepareStatement("SELECT * FROM user"))
+        {
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                String userName = rs.getString("name");
+                if (userName.contains(name)){
+                    userList.add(
+                     new User(rs.getInt("id"),rs.getString("name"),
+                            rs.getString("password"),rs.getInt("age")));
+                }
+            } return userList;
 
         }
         catch (SQLException e){
@@ -66,6 +86,7 @@ public class UserDaoImpl implements UserDao {
 
         return Optional.empty();
     }
+
 
     @Override
     public void updateUserPassword(int id, String newPass) {

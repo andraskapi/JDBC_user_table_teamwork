@@ -1,9 +1,12 @@
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 public interface UserDao {
 
-        User getUserByName (String name);
+        void removeUser(int id);
+
+        List<User> getUserByName(String name);
 
         void printUser();
 
@@ -20,6 +23,7 @@ public interface UserDao {
         void updateUserPassword(int id, String newpass);
 
         boolean deleteUser();
+
     }
 
 
